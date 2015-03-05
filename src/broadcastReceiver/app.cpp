@@ -1,6 +1,6 @@
 #include <iostream>
 #include <QtNetwork>
-#include "receiver.h"
+#include "app.h"
 
 Receiver::Receiver(QObject *parent) :
     QObject(parent), port(45454)
@@ -9,12 +9,11 @@ Receiver::Receiver(QObject *parent) :
 
     udpSocket = new QUdpSocket(this);
     udpSocket->bind(port, QUdpSocket::ShareAddress);
-    connect(udpSocket, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
-
     socket = new QSslSocket(this);
+    connect(udpSocket, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
+    boxAddress = "";
     client = new QSslSocket(this);
 
-   // sslConnection();
 }
 
 
@@ -22,10 +21,10 @@ Receiver::Receiver(QObject *parent) :
 
 void Receiver::processPendingDatagrams()
 {
+    QByteArray datagram;
+    QHostAddress sender;
     while(udpSocket->hasPendingDatagrams())
     {
-        QByteArray datagram;
-        QHostAddress sender;
 
         // resize datagram to be capable to handle incoming data
         int datagramSize = udpSocket->pendingDatagramSize();
@@ -39,10 +38,9 @@ void Receiver::processPendingDatagrams()
         qDebug() << "Received datagram: " << datagram.data();
         qDebug() << "From: " << sender.toString();
         boxAddress = sender.toString();
-//        QByteArray response;
-//        response.append(boxAddress);
-//        udpSocket->writeDatagram(response.data(),response.size(), QHostAddress(sender.toString()),45454);
+
     }
+    sslConnection();
 }
 
 
@@ -50,26 +48,18 @@ void Receiver::sslConnection() {
 
     if(!QSslSocket::supportsSsl()) {
         qDebug() << "SSL is not supported";
+        return;
     }
-
-//    QString hostname = "192.168.207.121";
-
-    socket->connectToHostEncrypted(boxAddress, port);
-
-    qDebug() << "wchodzi";
-
+    if(boxAddress == "" )
+    {
+        qDebug() << "could not find address";
+    }
+    qDebug() << boxAddress;
     if(!socket->waitForEncrypted(15000)) {
         qDebug() << "waitForEncrypted() timeout";
         return;
     }
 
-    qDebug() << "wyszlo";
-    socket->write("3"); // 3 means that we should press the button 3 times
-
-    while(socket->waitForReadyRead(1000)) {
-        qDebug() << socket->readAll().data();
-    }
-    qDebug() << "End of SSL connection";
 }
 
 void Receiver::processMessage(QString &message)

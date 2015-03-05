@@ -15,10 +15,17 @@ public:
 
 private slots:
     void startBroadcasting();
+    void broadcast();
+    void processPendingDatagrams();
+    void sslConnection();
+signals:
+    void setAddress();
 
 private:
     QUdpSocket *udpSocket;
     int messageNo;
+    QSslSocket *socket;
+    QString appAddress;
 };
 
 
