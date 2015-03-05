@@ -16,7 +16,8 @@ private slots:
 
 private:
     QUdpSocket *udpSocket;
-
+    uint port;
+    void sslConnection();
 };
 
 #endif // RECEIVER_H

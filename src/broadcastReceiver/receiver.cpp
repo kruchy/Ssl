@@ -11,7 +11,7 @@ Receiver::Receiver(QObject *parent) :
     udpSocket->bind(port, QUdpSocket::ShareAddress);
 
     //connect(udpSocket, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
-    sslConnection();
+  //  sslConnection();
 }
 
 void Receiver::processPendingDatagrams()
