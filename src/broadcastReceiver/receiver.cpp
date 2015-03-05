@@ -9,10 +9,16 @@ Receiver::Receiver(QObject *parent) :
 
     udpSocket = new QUdpSocket(this);
     udpSocket->bind(port, QUdpSocket::ShareAddress);
+    connect(udpSocket, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
 
-    //connect(udpSocket, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
-    sslConnection();
+    socket = new QSslSocket(this);
+    client = new QSslSocket(this);
+
+   // sslConnection();
 }
+
+
+
 
 void Receiver::processPendingDatagrams()
 {
@@ -32,6 +38,10 @@ void Receiver::processPendingDatagrams()
 
         qDebug() << "Received datagram: " << datagram.data();
         qDebug() << "From: " << sender.toString();
+        boxAddress = sender.toString();
+//        QByteArray response;
+//        response.append(boxAddress);
+//        udpSocket->writeDatagram(response.data(),response.size(), QHostAddress(sender.toString()),45454);
     }
 }
 
@@ -42,22 +52,43 @@ void Receiver::sslConnection() {
         qDebug() << "SSL is not supported";
     }
 
-    QSslSocket socket;
-    QString hostname = "192.168.207.121";
+//    QString hostname = "192.168.207.121";
 
-    socket.connectToHostEncrypted(hostname, port);
+    socket->connectToHostEncrypted(boxAddress, port);
 
-    if(!socket.waitForEncrypted(1000)) {
+    qDebug() << "wchodzi";
+
+    if(!socket->waitForEncrypted(15000)) {
         qDebug() << "waitForEncrypted() timeout";
         return;
     }
 
-    socket.write("3"); // 3 means that we should press the button 3 times
+    qDebug() << "wyszlo";
+    socket->write("3"); // 3 means that we should press the button 3 times
 
-    while(socket.waitForReadyRead(1000)) {
-        qDebug() << socket.readAll().data();
+    while(socket->waitForReadyRead(1000)) {
+        qDebug() << socket->readAll().data();
     }
-
     qDebug() << "End of SSL connection";
 }
 
+void Receiver::processMessage(QString &message)
+{
+    if(message.startsWith("CON"))
+    {
+//        connect();
+    }
+
+    if(message.startsWith("PRS"))
+    {
+
+    }
+    if(message.startsWith("LOG"))
+    {
+
+    }
+    if(message.contains("PSW"))
+    {
+
+    }
+}

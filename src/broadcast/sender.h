@@ -2,8 +2,8 @@
 #define SENDER_H
 
 #include <QtWidgets>
+#include "src/connector.h"
 #include <QtNetwork>
-class QTimer;
 class QUdpSocket;
 
 class Sender : public QObject
@@ -15,11 +15,9 @@ public:
 
 private slots:
     void startBroadcasting();
-    void broadcastDatagram();
 
 private:
     QUdpSocket *udpSocket;
-    QTimer *timer;
     int messageNo;
 };
 

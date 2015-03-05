@@ -16,7 +16,11 @@ private slots:
 
 private:
     QUdpSocket *udpSocket;
-
+    uint port;
+    void sslConnection();
+    void processMessage(QString &message);
+    QSslSocket *socket,*client;
+    QString boxAddress;
 };
 
 #endif // RECEIVER_H
