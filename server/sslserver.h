@@ -16,7 +16,7 @@ signals:
 private:
     QSslSocket * sslServer;
     QTcpServer * tcpServer;
-    void writeToSsl(QSslSocket * socket, char * str);
+    void writeToSsl();
     void incomingConnection(int socketDescriptor);
     void checkListeningForConnections();
 };

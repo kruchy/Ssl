@@ -1,24 +1,27 @@
 #ifndef BROADCASTER_H
 #define BROADCASTER_H
 
-#include <QUdpSocket>
-#include <QTimer>
 #include <QObject>
+#include <QUdpSocket>
+#include <QSslSocket>
 
 class UdpReceiver : public QObject
 {
     Q_OBJECT
+
 public:
-    UdpReceiver(QObject *parent =0);
+    UdpReceiver(QObject *parent = 0);
     ~UdpReceiver();
 public slots:
-    void udpBroadcast();
+    void udpReadyRead();
 
+signals:
+    void gotDataFromHost(QHostAddress);
 private:
     QUdpSocket * udpSocket;
-    QTimer * timer;
-    bool broadcasting;
+    QSslSocket * sslSocket;
+    bool receiving;
 
- };
+};
 
 #endif // BROADCASTER_H

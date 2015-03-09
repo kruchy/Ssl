@@ -1,4 +1,4 @@
-#include "sherly.h"
+#include "server.h"
 
 #include <QThread>
 
@@ -7,7 +7,7 @@ Server::Server(QObject *parent) :
     port(8445)
 {
     sslServer = new SslServer(this);
-    broadcaster = new Broadcaster(this);
+    broadcaster = new UdpReceiver(this);
 
 }
 

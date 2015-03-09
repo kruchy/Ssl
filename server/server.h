@@ -26,7 +26,7 @@ public slots:
 
 private:
     SslServer * sslServer;
-    Broadcaster * broadcaster;
+    UdpReceiver * broadcaster;
     quint16 port;
     void sslError(QList<QSslError> list);
 

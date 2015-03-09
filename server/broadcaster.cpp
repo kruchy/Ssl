@@ -1,5 +1,5 @@
 #include "broadcaster.h"
-Broadcaster::Broadcaster(QObject *parent) : QObject(parent),broadcasting(true)
+UdpReceiver::UdpReceiver(QObject *parent) : QObject(parent),broadcasting(true)
 {
     udpSocket = new QUdpSocket(this);
     timer = new QTimer(this);
@@ -8,13 +8,13 @@ Broadcaster::Broadcaster(QObject *parent) : QObject(parent),broadcasting(true)
     connect(timer,SIGNAL(timeout()),this,SLOT(udpBroadcast()));
 }
 
-Broadcaster::~Broadcaster()
+UdpReceiver::~UdpReceiver()
 {
     udpSocket->disconnectFromHost();
     udpSocket->close();
 }
 
-void Broadcaster::udpBroadcast()
+void UdpReceiver::udpBroadcast()
 {
     if(broadcasting && udpSocket)
     {
